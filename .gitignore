@@ -1,0 +1,20 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+
+# intellij IDE
+.idea/
+
+# Virtual environment
+.venv/
+venv/
+
+# MyPy & Type Checking
+.mypy_cache/
+
+# Enviroment
+# *.env
+
+# Cache
+.pytest_cache/
+.cache
