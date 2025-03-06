@@ -1,5 +1,9 @@
 from enum import Enum
 
+from starlette.authentication import (
+    AuthenticationError
+)
+
 
 class ErrorCode(str, Enum):
     NOT_EXIST_RESOURCE = 'NOT_EXIST_RESOURCE'
@@ -17,13 +21,13 @@ class CustomException(Exception):
         super().__init__(self.message)
 
 
-class AuthenticateException(CustomException):
+class AuthenticateException(CustomException, AuthenticationError):
     def __init__(self, message: str, code: ErrorCode = ErrorCode.NO_AUTHENTICATE):
         self.message = message
         super().__init__(self.message, code)
 
 
-class AuthorizationException(CustomException):
+class AuthorizationException(CustomException, AuthenticationError):
     def __init__(self, message: str, code: ErrorCode = ErrorCode.ACCESS_DENIED):
         self.message = message
         super().__init__(self.message, code)

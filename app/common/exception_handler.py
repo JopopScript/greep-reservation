@@ -12,8 +12,13 @@ def toResponseContent(e: CustomException) -> dict:
     }
 
 
-DEFAULT_ERROR_MESSAGE = '알 수 없는 에러가 발생했습니다. 관리자에게 문의해주세요.'
 DEFAULT_CODE = 'NONE'
+DEFAULT_ERROR_MESSAGE = '알 수 없는 에러가 발생했습니다. 관리자에게 문의해주세요.'
+
+DEFAULT_ERROR_RESPONSE_CONTENTS = {
+    'code': DEFAULT_CODE,
+    'message': DEFAULT_ERROR_MESSAGE,
+}
 
 
 def __message_or_default(message: str):
@@ -33,7 +38,7 @@ def exception_handle(app: FastAPI):
         )
 
     @app.exception_handler(AuthorizationException)
-    async def authenticate_exception_handle(request: Request, exception: AuthorizationException):
+    async def authorization_exception_handle(request: Request, exception: AuthorizationException):
         return JSONResponse(
             status_code=status.HTTP_403_FORBIDDEN,
             content=toResponseContent(exception),
@@ -47,7 +52,7 @@ def exception_handle(app: FastAPI):
         )
 
     @app.exception_handler(NoResourceException)
-    async def business_exception_handle(request: Request, exception: NoResourceException):
+    async def no_resource_exception_handle(request: Request, exception: NoResourceException):
         return JSONResponse(
             status_code=status.HTTP_404_NOT_FOUND,
             content=toResponseContent(exception),
@@ -65,4 +70,11 @@ def exception_handle(app: FastAPI):
         return JSONResponse(
             status_code=status.HTTP_400_BAD_REQUEST,
             content=toResponseContent(exception),
+        )
+
+    @app.exception_handler(Exception)
+    async def unexpected_exception_handle(request: Request, exception: Exception):
+        return JSONResponse(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            content=DEFAULT_ERROR_RESPONSE_CONTENTS,
         )
