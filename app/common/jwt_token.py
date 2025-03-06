@@ -3,15 +3,10 @@ from uuid import UUID
 
 import jwt
 
+from app.common.authentication import Authentication
 from app.common.enviroment import env
 from app.common.exceptions import AuthenticateException
 from app.service.models.role import Role
-
-
-class Authentication:
-    def __init__(self, account_id: UUID, role: Role):
-        self.account_id: UUID = account_id
-        self.role: Role = role
 
 
 class JwtTokenUtil:

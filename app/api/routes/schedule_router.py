@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, Request, Query
 
 from app.api.routes.dto.schedule_dto import ScheduleResponse, ScheduleRequest, \
     PaginatedScheduleResponse, CustomerScheduleCancelRequest
+from app.common.auth_middleware import account_id
 from app.dependencies import schedule_service
 from app.docs.error_responses import customer_create_schedule, customer_change_schedule, customer_change_schedule_status
 from app.service.models.page import SchedulePage
@@ -73,7 +74,3 @@ async def change_schedule_status(
 ) -> ScheduleResponse:
     schedule = await service.customer_cancel(account_id(request), schedule_id)
     return ScheduleResponse.fromSchedule(schedule)
-
-
-def account_id(request: Request):
-    return request.state.auth.account_id
