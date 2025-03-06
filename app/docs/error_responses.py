@@ -1,4 +1,4 @@
-__samples = {
+examples = {
     "start before end": {
         "value": {
             "code": "INVALID_ARGUMENT",
@@ -73,11 +73,11 @@ admin_change_schedule = {
         "content": {
             "application/json": {
                 "examples": {
-                    "start before end": __samples["start before end"],
-                    "time unit": __samples["time unit"],
-                    "3days after": __samples["3days after"],
-                    "limit over": __samples["limit over"],
-                    "canceled info fix": __samples["canceled info fix"],
+                    "start before end": examples["start before end"],
+                    "time unit": examples["time unit"],
+                    "3days after": examples["3days after"],
+                    "limit over": examples["limit over"],
+                    "canceled info fix": examples["canceled info fix"],
                 }
             }
         },
@@ -85,7 +85,7 @@ admin_change_schedule = {
     404: {
         "description": "not exist resource",
         "content": {
-            "application/json": {"example": __samples["not exist resource"]["value"]}
+            "application/json": {"example": examples["not exist resource"]["value"]}
         },
     },
 }
@@ -96,11 +96,11 @@ admin_change_schedule_status = {
         "content": {
             "application/json": {
                 "examples": {
-                    "start before end": __samples["start before end"],
-                    "time unit": __samples["time unit"],
-                    "3days after": __samples["3days after"],
-                    "limit over": __samples["limit over"],
-                    "canceled info fix": __samples["canceled info fix"],
+                    "start before end": examples["start before end"],
+                    "time unit": examples["time unit"],
+                    "3days after": examples["3days after"],
+                    "limit over": examples["limit over"],
+                    "canceled info fix": examples["canceled info fix"],
                 }
             }
         },
@@ -108,7 +108,7 @@ admin_change_schedule_status = {
     404: {
         "description": "not exist resource",
         "content": {
-            "application/json": {"example": __samples["not exist resource"]["value"]}
+            "application/json": {"example": examples["not exist resource"]["value"]}
         },
     },
 }
@@ -119,10 +119,10 @@ customer_create_schedule = {
         "content": {
             "application/json": {
                 "examples": {
-                    "start before end": __samples["start before end"],
-                    "time unit": __samples["time unit"],
-                    "3days after": __samples["3days after"],
-                    "limit over": __samples["limit over"],
+                    "start before end": examples["start before end"],
+                    "time unit": examples["time unit"],
+                    "3days after": examples["3days after"],
+                    "limit over": examples["limit over"],
                 }
             }
         },
@@ -130,7 +130,7 @@ customer_create_schedule = {
     404: {
         "description": "not exist resource",
         "content": {
-            "application/json": {"example": __samples["not exist resource"]["value"]}
+            "application/json": {"example": examples["not exist resource"]["value"]}
         },
     },
 }
@@ -141,11 +141,11 @@ customer_change_schedule = {
         "content": {
             "application/json": {
                 "examples": {
-                    "start before end": __samples["start before end"],
-                    "time unit": __samples["time unit"],
-                    "3days after": __samples["3days after"],
-                    "limit over": __samples["limit over"],
-                    "canceled info fix": __samples["canceled info fix"],
+                    "start before end": examples["start before end"],
+                    "time unit": examples["time unit"],
+                    "3days after": examples["3days after"],
+                    "limit over": examples["limit over"],
+                    "canceled info fix": examples["canceled info fix"],
                 }
             }
         },
@@ -153,13 +153,13 @@ customer_change_schedule = {
     403: {
         "description": "not owner resource",
         "content": {
-            "application/json": {"example": __samples["not owner resource"]["value"]}
+            "application/json": {"example": examples["not owner resource"]["value"]}
         },
     },
     404: {
         "description": "not exist resource",
         "content": {
-            "application/json": {"example": __samples["not exist resource"]["value"]}
+            "application/json": {"example": examples["not exist resource"]["value"]}
         },
     },
 }
@@ -170,13 +170,13 @@ customer_change_schedule_status = {
         "content": {
             "application/json": {
                 "examples": {
-                    "start before end": __samples["start before end"],
-                    "time unit": __samples["time unit"],
-                    "3days after": __samples["3days after"],
-                    "limit over": __samples["limit over"],
-                    "must canceled": __samples["must canceled"],
-                    "cant be canceled": __samples["cant be canceled"],
-                    "cant same": __samples["cant same"],
+                    "start before end": examples["start before end"],
+                    "time unit": examples["time unit"],
+                    "3days after": examples["3days after"],
+                    "limit over": examples["limit over"],
+                    "must canceled": examples["must canceled"],
+                    "cant be canceled": examples["cant be canceled"],
+                    "cant same": examples["cant same"],
                 }
             }
         },
@@ -184,13 +184,13 @@ customer_change_schedule_status = {
     403: {
         "description": "not owner resource",
         "content": {
-            "application/json": {"example": __samples["not owner resource"]["value"]}
+            "application/json": {"example": examples["not owner resource"]["value"]}
         },
     },
     404: {
         "description": "not exist resource",
         "content": {
-            "application/json": {"example": __samples["not exist resource"]["value"]}
+            "application/json": {"example": examples["not exist resource"]["value"]}
         },
     },
 }
@@ -201,9 +201,9 @@ get_schedule_slots = {
         "content": {
             "application/json": {
                 "examples": {
-                    "3days after": __samples["3days after"],
-                    "start before end": __samples["start before end"],
-                    "search range over": __samples["search range over"],
+                    "3days after": examples["3days after"],
+                    "start before end": examples["start before end"],
+                    "search range over": examples["search range over"],
                 }
             }
         },

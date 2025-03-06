@@ -1,14 +1,16 @@
 import logging
 from contextlib import asynccontextmanager
 
-from app.common.enviroment import env
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from sqlmodel.ext.asyncio.session import AsyncSession
+
+from app.common.enviroment import env
 
 if env.is_local():
     logging.basicConfig()
     logging.getLogger("sqlalchemy.engine").setLevel(logging.INFO)
-__async_engine = create_async_engine(
+
+async_engine = create_async_engine(
     str(env.DATABASE_URL),
     pool_size=10,
     max_overflow=20,
@@ -18,7 +20,7 @@ __async_engine = create_async_engine(
 )
 
 AsyncSessionLocal = async_sessionmaker(
-    bind=__async_engine, class_=AsyncSession, expire_on_commit=False
+    bind=async_engine, class_=AsyncSession, expire_on_commit=False
 )
 
 

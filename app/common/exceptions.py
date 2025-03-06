@@ -14,36 +14,37 @@ class ErrorCode(str, Enum):
 
 class CustomException(Exception):
     def __init__(self, message: str, code: ErrorCode):
-        self.message = message
-        self.code: ErrorCode = code
-        super().__init__(self.message)
+        self.__message = message
+        self.__code: ErrorCode = code
+        super().__init__(message)
+
+    def code(self) -> str | None:
+        return None if self.__code is None else self.__code.value
+
+    def message(self) -> str:
+        return self.__message
 
 
 class AuthenticateException(CustomException, AuthenticationError):
     def __init__(self, message: str, code: ErrorCode = ErrorCode.NO_AUTHENTICATE):
-        self.message = message
-        super().__init__(self.message, code)
+        super().__init__(message, code)
 
 
 class AuthorizationException(CustomException, AuthenticationError):
     def __init__(self, message: str, code: ErrorCode = ErrorCode.ACCESS_DENIED):
-        self.message = message
-        super().__init__(self.message, code)
+        super().__init__(message, code)
 
 
 class BusinessException(CustomException):
     def __init__(self, message: str, code: ErrorCode):
-        self.message = message
-        super().__init__(self.message, code)
+        super().__init__(message, code)
 
 
 class InternalServerException(CustomException):
     def __init__(self, message: str, code: ErrorCode = ErrorCode.INTERNAL_SERVER_ERROR):
-        self.message = message
-        super().__init__(self.message, code)
+        super().__init__(message, code)
 
 
 class NoResourceException(CustomException):
     def __init__(self, message: str, code: ErrorCode = ErrorCode.NOT_EXIST_RESOURCE):
-        self.message = message
-        super().__init__(self.message, code)
+        super().__init__(message, code)

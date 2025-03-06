@@ -32,8 +32,7 @@ class JwtTokenUtil:
         except Exception:
             raise AuthenticateException("invalid token")
 
-    @staticmethod
-    def __parse_sub(user_id: str) -> UUID:
+    def __parse_sub(self, user_id: str) -> UUID:
         try:
             return UUID(user_id)
         except ValueError:
@@ -41,8 +40,7 @@ class JwtTokenUtil:
                 f"Invalid sub. is not UUID format. sub:'{user_id}'"
             )
 
-    @staticmethod
-    def __parse_role(role: str) -> Role:
+    def __parse_role(self, role: str) -> Role:
         try:
             return Role(role)
         except ValueError:

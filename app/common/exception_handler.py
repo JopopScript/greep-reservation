@@ -3,21 +3,12 @@ from fastapi.responses import JSONResponse
 
 from app.common.exceptions import (
     AuthenticateException,
-    ErrorCode,
     InternalServerException,
     CustomException,
     BusinessException,
     AuthorizationException,
     NoResourceException,
 )
-
-
-def error_content(e: CustomException) -> dict:
-    return {
-        "code": __code_or_default(e.code),
-        "message": __message_or_default(e.message),
-    }
-
 
 DEFAULT_CODE = "NONE"
 DEFAULT_ERROR_MESSAGE = "알 수 없는 에러가 발생했습니다. 관리자에게 문의해주세요."
@@ -28,18 +19,17 @@ DEFAULT_ERROR_RESPONSE_CONTENTS = {
 }
 
 
-def __message_or_default(message: str):
-    return DEFAULT_ERROR_MESSAGE if message is None else message
-
-
-def __code_or_default(error_code: ErrorCode):
-    return DEFAULT_CODE if error_code is None else error_code.value
+def error_content(e: CustomException) -> dict:
+    return {
+        "code": DEFAULT_CODE if e.code() is None else e.code(),
+        "message": DEFAULT_ERROR_MESSAGE if e.message() is None else e.message(),
+    }
 
 
 def exception_handle(app: FastAPI):
     @app.exception_handler(AuthenticateException)
     async def authenticate_exception_handle(
-        request: Request, exception: AuthenticateException
+            request: Request, exception: AuthenticateException
     ):
         return JSONResponse(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -48,7 +38,7 @@ def exception_handle(app: FastAPI):
 
     @app.exception_handler(AuthorizationException)
     async def authorization_exception_handle(
-        request: Request, exception: AuthorizationException
+            request: Request, exception: AuthorizationException
     ):
         return JSONResponse(
             status_code=status.HTTP_403_FORBIDDEN,
@@ -64,7 +54,7 @@ def exception_handle(app: FastAPI):
 
     @app.exception_handler(NoResourceException)
     async def no_resource_exception_handle(
-        request: Request, exception: NoResourceException
+            request: Request, exception: NoResourceException
     ):
         return JSONResponse(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -73,7 +63,7 @@ def exception_handle(app: FastAPI):
 
     @app.exception_handler(InternalServerException)
     async def internal_server_exception_handle(
-        request: Request, exception: InternalServerException
+            request: Request, exception: InternalServerException
     ):
         return JSONResponse(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
