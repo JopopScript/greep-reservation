@@ -67,6 +67,8 @@ chmod +x ./script/*
 # 테스트 종료
 ./script/docker_compose_down.sh
 ```
+## API 문서
+- 서버 구동 후 http://localhost:8000/docs 로 접속하여 swagger UI 확인 가능
 
 ## 프로젝트 구성
 
