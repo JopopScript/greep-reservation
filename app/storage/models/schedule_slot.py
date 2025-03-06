@@ -4,7 +4,7 @@ from sqlmodel import Field, SQLModel
 
 
 class ScheduleSlot(SQLModel, table=True):
-    __tablename__ = 'schedule_slot'
+    __tablename__ = "schedule_slot"
 
     id: int | None = Field(default=None, primary_key=True)
     slot_start_time: datetime = Field(nullable=False)
@@ -16,3 +16,6 @@ class ScheduleSlot(SQLModel, table=True):
 
     def end_at(self) -> datetime:
         return self.slot_start_time + timedelta(hours=1)
+
+    def remain_applicants(self) -> int:
+        return self.max_applicants - self.confirmed_applicants

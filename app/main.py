@@ -7,7 +7,7 @@ from app.common.enviroment import env
 from app.common.exception_handler import exception_handle
 
 app: FastAPI = FastAPI(
-    title='exam schedule reservation system',
+    title="exam schedule reservation system",
     docs_url=env.DOCS_URL,
 )
 
@@ -16,7 +16,7 @@ exception_handle(app)
 app.add_middleware(
     AuthenticationMiddleware,
     backend=BearerTokenAuthBackend(),
-    on_error=auth_error_handler
+    on_error=auth_error_handler,
 )
 
 app.include_router(api_router)

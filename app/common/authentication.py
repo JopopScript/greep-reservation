@@ -1,6 +1,6 @@
 from uuid import UUID
 
-from starlette.authentication import (AuthCredentials, BaseUser)
+from starlette.authentication import AuthCredentials, BaseUser
 
 from app.service.models.role import Role
 

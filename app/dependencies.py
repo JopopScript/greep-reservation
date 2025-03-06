@@ -15,7 +15,9 @@ def account_service(sess: AsyncSession = Depends(session)):
 
 
 def schedule_service(sess: AsyncSession = Depends(session)):
-    return ScheduleService(ScheduleRepository(sess), schedule_slot_service(sess), account_service(sess))
+    return ScheduleService(
+        ScheduleRepository(sess), schedule_slot_service(sess), account_service(sess)
+    )
 
 
 def schedule_slot_service(sess: AsyncSession = Depends(session)):

@@ -4,7 +4,9 @@ from app.service.models.time_range import TimeRange
 
 
 class ScheduleForm:
-    def __init__(self, name: str, start_at: datetime, end_at: datetime, applicants: int):
+    def __init__(
+        self, name: str, start_at: datetime, end_at: datetime, applicants: int
+    ):
         self.name: str = name
         self.start_at: datetime = start_at
         self.end_at: datetime = end_at

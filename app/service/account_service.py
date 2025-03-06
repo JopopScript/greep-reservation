@@ -15,7 +15,9 @@ class AccountService:
         self.sess = sess
 
     async def create(self, nickname: str, role: Role) -> Account:
-        return await self.repository.save(Account(id=uuid4(), nickname=nickname, role=role))
+        return await self.repository.save(
+            Account(id=uuid4(), nickname=nickname, role=role)
+        )
 
     async def get(self, account_id: UUID) -> Optional[Account]:
         return await self.repository.find_by_id(account_id)

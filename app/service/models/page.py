@@ -5,7 +5,9 @@ from app.storage.models.schedule_slot import ScheduleSlot
 
 
 class SchedulePage:
-    def __init__(self, total: int, page_size: int, page_number: int, items: list[Schedule]):
+    def __init__(
+        self, total: int, page_size: int, page_number: int, items: list[Schedule]
+    ):
         self.total: int = total
         self.page_size: int = page_size
         self.page_number: int = page_number

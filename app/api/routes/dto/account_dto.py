@@ -17,7 +17,7 @@ class AccountResponse(BaseModel):
     role: Role
 
     @staticmethod
-    def fromAccount(account: Account) -> 'AccountResponse':
+    def from_account(account: Account) -> "AccountResponse":
         return AccountResponse(
             id=account.id,
             nickname=account.nickname,
@@ -30,7 +30,7 @@ class ProfileResponse(BaseModel):
     nickname: str
 
     @staticmethod
-    def fromAccount(account: Account) -> 'ProfileResponse':
+    def from_account(account: Account) -> "ProfileResponse":
         return ProfileResponse(
             id=account.id,
             nickname=account.nickname,

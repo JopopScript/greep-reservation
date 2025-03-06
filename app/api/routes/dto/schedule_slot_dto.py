@@ -12,7 +12,7 @@ class ScheduleSlotResponse(BaseModel):
     confirmed_applicants: int
 
     @staticmethod
-    def fromScheduleSlot(slot: ScheduleSlot) -> 'ScheduleSlotResponse':
+    def from_schedule_slot(slot: ScheduleSlot) -> "ScheduleSlotResponse":
         return ScheduleSlotResponse(
             start_at=slot.start_at(),
             end_at=slot.end_at(),

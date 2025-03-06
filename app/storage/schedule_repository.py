@@ -19,9 +19,18 @@ class ScheduleRepository:
         return await self.sess.get(Schedule, schedule_id)
 
     async def find_all(self, query: ScheduleQuery) -> SchedulePage:
-        filter_account = Schedule.account_id == query.account_id if query.has_account_filter() else True
+        filter_account = (
+            Schedule.account_id == query.account_id
+            if query.has_account_filter()
+            else True
+        )
 
-        list_query = select(Schedule).filter(filter_account).offset(query.offset()).limit(query.limit())
+        list_query = (
+            select(Schedule)
+            .filter(filter_account)
+            .offset(query.offset())
+            .limit(query.limit())
+        )
         schedules: list[Schedule] = (await self.sess.exec(list_query)).all()
 
         total_query = select(func.count()).select_from(Schedule).filter(filter_account)
@@ -31,5 +40,5 @@ class ScheduleRepository:
             total=total,
             page_size=query.page_size,
             page_number=query.page_number,
-            items=schedules
+            items=schedules,
         )

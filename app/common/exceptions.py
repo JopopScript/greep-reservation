@@ -1,17 +1,15 @@
 from enum import Enum
 
-from starlette.authentication import (
-    AuthenticationError
-)
+from starlette.authentication import AuthenticationError
 
 
 class ErrorCode(str, Enum):
-    NOT_EXIST_RESOURCE = 'NOT_EXIST_RESOURCE'
-    INVALID_ARGUMENT = 'INVALID_ARGUMENT'
-    INVALID_STATE = 'INVALID_STATE'
-    NO_AUTHENTICATE = 'NO_AUTHENTICATE'
-    ACCESS_DENIED = 'ACCESS_DENIED'
-    INTERNAL_SERVER_ERROR = 'INTERNAL_SERVER_ERROR'
+    NOT_EXIST_RESOURCE = "NOT_EXIST_RESOURCE"
+    INVALID_ARGUMENT = "INVALID_ARGUMENT"
+    INVALID_STATE = "INVALID_STATE"
+    NO_AUTHENTICATE = "NO_AUTHENTICATE"
+    ACCESS_DENIED = "ACCESS_DENIED"
+    INTERNAL_SERVER_ERROR = "INTERNAL_SERVER_ERROR"
 
 
 class CustomException(Exception):

@@ -18,13 +18,15 @@ class Schedule(SQLModel, table=True):
     start_at: datetime = Field(nullable=False)
     end_at: datetime = Field(nullable=False)
     applicants: int
-    status: ScheduleStatus = Field(sa_column=Column(EnumConvertor(ScheduleStatus), nullable=False))
+    status: ScheduleStatus = Field(
+        sa_column=Column(EnumConvertor(ScheduleStatus), nullable=False)
+    )
     created_at: datetime | None = Field(default_factory=datetime.now)
-    account_id: UUID = Field(foreign_key='account.id')
-    account: Account = Relationship(sa_relationship_kwargs={'lazy': 'selectin'})
+    account_id: UUID = Field(foreign_key="account.id")
+    account: Account = Relationship(sa_relationship_kwargs={"lazy": "selectin"})
 
     @staticmethod
-    def from_form(schedule_form: ScheduleForm, account: Account) -> 'Schedule':
+    def from_form(schedule_form: ScheduleForm, account: Account) -> "Schedule":
         return Schedule(
             id=None,
             name=schedule_form.name,
@@ -34,7 +36,7 @@ class Schedule(SQLModel, table=True):
             status=ScheduleStatus.PENDING,
             created_at=None,
             account_id=account.id,
-            account=account
+            account=account,
         )
 
     def time_range(self) -> TimeRange:
@@ -44,7 +46,7 @@ class Schedule(SQLModel, table=True):
         if self.__is_canceled():
             raise BusinessException(
                 f"Can't update schedule while in CANCELED status.",
-                ErrorCode.INVALID_STATE
+                ErrorCode.INVALID_STATE,
             )
         self.name = form.name
         self.start_at = form.start_at
@@ -56,7 +58,7 @@ class Schedule(SQLModel, table=True):
         if not self.__is_pending():
             raise BusinessException(
                 f"schedule can't change status '{self.status.value}' to 'CANCEL'",
-                ErrorCode.INVALID_STATE
+                ErrorCode.INVALID_STATE,
             )
 
     def change_status(self, to_be: ScheduleStatus) -> None:
@@ -67,15 +69,16 @@ class Schedule(SQLModel, table=True):
         elif to_be == ScheduleStatus.PENDING:
             raise BusinessException(
                 f"schedule can't change status '{self.status.value}' to 'PENDING'",
-                ErrorCode.INVALID_ARGUMENT
+                ErrorCode.INVALID_ARGUMENT,
             )
 
     def validate_owner(self, account_id: UUID) -> None:
         if not self.__is_owner(account_id):
             raise AuthorizationException(
-                f"schedule changes only owner. your are not this schedule owner. schedule_id: '{self.id}'")
+                f"schedule changes only owner. your are not this schedule owner. schedule_id: '{self.id}'"
+            )
 
-    def slot_allocated(self):
+    def is_slot_allocated(self):
         return self.status == ScheduleStatus.CONFIRMED
 
     def cancel(self) -> None:

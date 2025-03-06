@@ -14,18 +14,22 @@ class ScheduleStatusChange:
     def __validate_equal(self):
         if self.__as_is_status == self.to_be_status:
             raise BusinessException(
-                'as_is and to_be are the same. cant change to same status. ' +
-                f'status({self.__as_is_status()})',
-                ErrorCode.INVALID_ARGUMENT
+                "as_is and to_be are the same. cant change to same status. "
+                + f"status({self.__as_is_status()})",
+                ErrorCode.INVALID_ARGUMENT,
             )
 
     def increase_applicants(self) -> bool:
-        return (self.__as_is_status() != ScheduleStatus.CONFIRMED
-                and self.to_be_status == ScheduleStatus.CONFIRMED)
+        return (
+            self.__as_is_status() != ScheduleStatus.CONFIRMED
+            and self.to_be_status == ScheduleStatus.CONFIRMED
+        )
 
     def decrease_applicants(self) -> bool:
-        return (self.__as_is_status() == ScheduleStatus.CONFIRMED
-                and self.to_be_status != ScheduleStatus.CONFIRMED)
+        return (
+            self.__as_is_status() == ScheduleStatus.CONFIRMED
+            and self.to_be_status != ScheduleStatus.CONFIRMED
+        )
 
     def __as_is_status(self):
         return self.as_is_schedule.status

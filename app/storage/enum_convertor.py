@@ -3,7 +3,7 @@ from typing import Type, TypeVar, Generic
 
 from sqlalchemy import String, TypeDecorator
 
-T = TypeVar('T', bound=Enum)
+T = TypeVar("T", bound=Enum)
 
 
 class EnumConvertor(TypeDecorator, Generic[T]):

@@ -13,8 +13,12 @@ from app.storage.schedule_repository import ScheduleRepository
 
 
 class ScheduleService:
-    def __init__(self, repository: ScheduleRepository, slot_service: ScheduleSlotService,
-                 account_service: AccountService):
+    def __init__(
+        self,
+        repository: ScheduleRepository,
+        slot_service: ScheduleSlotService,
+        account_service: AccountService,
+    ):
         self.repository = repository
         self.slot_service = slot_service
         self.account_service = account_service
@@ -25,10 +29,14 @@ class ScheduleService:
     async def create(self, account_id: UUID, form: ScheduleForm) -> Schedule:
         account = await self.account_service.get_or_raise(account_id)
         schedule = Schedule.from_form(form, account)
-        await self.slot_service.validate_applicants_limit(schedule.time_range(), schedule.applicants)
+        await self.slot_service.validate_applicants_limit(
+            schedule.time_range(), schedule.applicants
+        )
         return await self.repository.save(schedule)
 
-    async def customer_update(self, schedule_id: int, form: ScheduleForm, account_id: UUID) -> Schedule:
+    async def customer_update(
+        self, schedule_id: int, form: ScheduleForm, account_id: UUID
+    ) -> Schedule:
         schedule = await self.__get_or_raise(schedule_id)
         schedule.validate_owner(account_id)
         await self.slot_service.re_allocate(schedule, form)
@@ -45,11 +53,15 @@ class ScheduleService:
         schedule = await self.__get_or_raise(schedule_id)
         schedule.validate_owner(account_id)
         schedule.validate_customer_cancel(account_id)
-        await self.slot_service.add_or_minus_by(ScheduleStatusChange(schedule, ScheduleStatus.CANCELED))
+        await self.slot_service.add_or_minus_by(
+            ScheduleStatusChange(schedule, ScheduleStatus.CANCELED)
+        )
         schedule.cancel()
         return await self.repository.save(schedule)
 
-    async def admin_change_status(self, schedule_id: int, to_be: ScheduleStatus) -> Schedule:
+    async def admin_change_status(
+        self, schedule_id: int, to_be: ScheduleStatus
+    ) -> Schedule:
         schedule = await self.__get_or_raise(schedule_id)
         await self.slot_service.add_or_minus_by(ScheduleStatusChange(schedule, to_be))
         schedule.change_status(to_be)
@@ -58,5 +70,7 @@ class ScheduleService:
     async def __get_or_raise(self, schedule_id: int) -> Schedule:
         schedule = await self.repository.find_by_id(schedule_id)
         if schedule is None:
-            raise NoResourceException(f"schedule is not exists. schedule_id: '{schedule_id}'")
+            raise NoResourceException(
+                f"schedule is not exists. schedule_id: '{schedule_id}'"
+            )
         return schedule

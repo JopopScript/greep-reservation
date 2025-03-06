@@ -17,13 +17,35 @@ class ScheduleSlotRepository:
         slot_start = self.align_hour(start_at)
         return await self._get_or_create_slot(slot_start)
 
-    async def update_confirmed_applicants(self, slot_start: datetime, new_count: int) -> ScheduleSlot:
+    async def update_confirmed_applicants(
+        self, slot_start: datetime, new_count: int
+    ) -> ScheduleSlot:
         slot = await self._get_or_create_slot(slot_start)
         slot.confirmed_applicants = new_count
 
         self.sess.add(slot)
         await self.sess.flush()
         return slot
+
+    async def find_schedules_by_range_with_lock(self, time_range: TimeRange) -> list[ScheduleSlot]:
+        await self.__missing_create_slot(time_range.start_at(), time_range.end_at())
+        query = (
+            select(ScheduleSlot)
+            .where(
+                and_(
+                    ScheduleSlot.slot_start_time >= time_range.start_at(),
+                    ScheduleSlot.slot_start_time <= time_range.end_at(),
+                    )
+            )
+            .order_by(ScheduleSlot.slot_start_time)
+            .with_for_update()
+        )
+
+        async with self.sess.begin():  # Ensure we are inside a transaction
+            result = await self.sess.exec(query)
+            slots = result.all()
+
+        return slots
 
     async def min_applicants_in_range(self, time_range: TimeRange) -> int:
         await self.__missing_create_slot(time_range.start_at(), time_range.end_at())
@@ -33,7 +55,7 @@ class ScheduleSlotRepository:
                 and_(
                     ScheduleSlot.slot_start_time >= time_range.start_at(),
                     ScheduleSlot.slot_start_time <= time_range.end_at(),
-                )
+                    )
             )
             .order_by((ScheduleSlot.max_applicants - ScheduleSlot.confirmed_applicants))
             .limit(1)
@@ -78,24 +100,31 @@ class ScheduleSlotRepository:
         require_times = self.missing_slot(start_at, end_at, exist_slots)
         await self.__create_all(require_times)
 
-    async def __find_all(self, start_at: datetime, end_at: datetime) -> list[ScheduleSlot]:
-        stmt = select(ScheduleSlot).where(
-            ScheduleSlot.slot_start_time >= start_at,
-            ScheduleSlot.slot_start_time < end_at
-        ).order_by(col(ScheduleSlot.slot_start_time))
+    async def __find_all(
+        self, start_at: datetime, end_at: datetime
+    ) -> list[ScheduleSlot]:
+        stmt = (
+            select(ScheduleSlot)
+            .where(
+                ScheduleSlot.slot_start_time >= start_at,
+                ScheduleSlot.slot_start_time < end_at,
+            )
+            .order_by(col(ScheduleSlot.slot_start_time))
+        )
         result = await self.sess.exec(stmt)
         return result.all()
 
     async def __create_all(self, start_times: list[datetime]) -> None:
         if start_times:
             slots_to_create = [
-                ScheduleSlot(slot_start_time=slot_time)
-                for slot_time in start_times
+                ScheduleSlot(slot_start_time=slot_time) for slot_time in start_times
             ]
             self.sess.add_all(slots_to_create)
             await self.sess.flush()
 
-    def missing_slot(self, start_at: datetime, end_at: datetime, exists: list[ScheduleSlot]):
+    def missing_slot(
+        self, start_at: datetime, end_at: datetime, exists: list[ScheduleSlot]
+    ):
         existing_slots = {s.slot_start_time for s in exists}
         missing_slot = []
         current_time = self.align_hour(start_at)
