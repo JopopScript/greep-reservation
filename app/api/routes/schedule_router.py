@@ -77,7 +77,7 @@ async def change_schedule(
 async def change_schedule_status(
     request: Request,
     schedule_id: int,
-    update_request: CustomerScheduleCancelRequest,
+    _: CustomerScheduleCancelRequest,
     service: ScheduleService = Depends(schedule_service),
 ) -> ScheduleResponse:
     schedule = await service.customer_cancel(account_id(request), schedule_id)

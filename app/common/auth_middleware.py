@@ -40,7 +40,7 @@ class BearerTokenAuthBackend(AuthenticationBackend):
             return AuthCredentials(), UnauthenticatedUser()
 
 
-def auth_error_handler(conn: HTTPConnection, error: AuthenticationError) -> Response:
+def auth_error_handler(_: HTTPConnection, error: AuthenticationError) -> Response:
     if isinstance(error, AuthenticateException):
         return JSONResponse(
             status_code=status.HTTP_401_UNAUTHORIZED,

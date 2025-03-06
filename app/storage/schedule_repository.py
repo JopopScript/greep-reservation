@@ -1,5 +1,6 @@
 from sqlmodel import func, select
 from sqlmodel.ext.asyncio.session import AsyncSession
+from sqlalchemy import literal
 
 from app.service.models.page import SchedulePage
 from app.service.models.schedule_query import ScheduleQuery
@@ -22,7 +23,7 @@ class ScheduleRepository:
         filter_account = (
             Schedule.account_id == query.account_id
             if query.has_account_filter()
-            else True
+            else literal(True)
         )
 
         list_query = (
@@ -31,7 +32,7 @@ class ScheduleRepository:
             .offset(query.offset())
             .limit(query.limit())
         )
-        schedules: list[Schedule] = (await self.sess.exec(list_query)).all()
+        schedules = (await self.sess.exec(list_query)).all()
 
         total_query = select(func.count()).select_from(Schedule).filter(filter_account)
         total = (await self.sess.exec(total_query)).one()

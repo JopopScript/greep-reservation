@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from typing import Sequence
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlmodel import select, col, and_, update
@@ -29,7 +30,7 @@ class ScheduleSlotRepository:
 
     async def find_schedules_by_range_with_lock(
         self, time_range: TimeRange
-    ) -> list[ScheduleSlot]:
+    ) -> Sequence[ScheduleSlot]:
         await self.__missing_create_slot(time_range.start_at(), time_range.end_at())
         query = (
             select(ScheduleSlot)
@@ -43,11 +44,8 @@ class ScheduleSlotRepository:
             .with_for_update()
         )
 
-        async with self.sess.begin():  # Ensure we are inside a transaction
-            result = await self.sess.exec(query)
-            slots = result.all()
-
-        return slots
+        result = await self.sess.execute(query)
+        return result.scalars().all()
 
     async def min_applicants_in_range(self, time_range: TimeRange) -> int:
         await self.__missing_create_slot(time_range.start_at(), time_range.end_at())
@@ -63,8 +61,8 @@ class ScheduleSlotRepository:
             .limit(1)
         )
 
-        result = await self.sess.exec(query)
-        min_slot = result.first()
+        result = await self.sess.execute(query)
+        min_slot = result.scalars().first()
         return min_slot.max_applicants - min_slot.confirmed_applicants
 
     async def add_applicants(self, time_range: TimeRange, applicants: int) -> None:
@@ -79,7 +77,7 @@ class ScheduleSlotRepository:
             )
             .values(confirmed_applicants=ScheduleSlot.confirmed_applicants + applicants)
         )
-        await self.sess.exec(stmt)
+        await self.sess.execute(stmt)
 
     async def _get_or_create_slot(self, slot_start: datetime) -> ScheduleSlot:
         stmt = select(ScheduleSlot).where(ScheduleSlot.slot_start_time == slot_start)
@@ -104,7 +102,7 @@ class ScheduleSlotRepository:
 
     async def __find_all(
         self, start_at: datetime, end_at: datetime
-    ) -> list[ScheduleSlot]:
+    ) -> Sequence[ScheduleSlot]:
         stmt = (
             select(ScheduleSlot)
             .where(
@@ -113,8 +111,8 @@ class ScheduleSlotRepository:
             )
             .order_by(col(ScheduleSlot.slot_start_time))
         )
-        result = await self.sess.exec(stmt)
-        return result.all()
+        result = await self.sess.execute(stmt)
+        return result.scalars().all()
 
     async def __create_all(self, start_times: list[datetime]) -> None:
         if start_times:
@@ -125,7 +123,7 @@ class ScheduleSlotRepository:
             await self.sess.flush()
 
     def missing_slot(
-        self, start_at: datetime, end_at: datetime, exists: list[ScheduleSlot]
+        self, start_at: datetime, end_at: datetime, exists: Sequence[ScheduleSlot]
     ):
         existing_slots = {s.slot_start_time for s in exists}
         missing_slot = []

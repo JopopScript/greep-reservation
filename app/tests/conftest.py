@@ -4,7 +4,7 @@ from uuid import UUID
 import pytest
 from httpx import ASGITransport, AsyncClient
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
-from sqlmodel import select, delete
+from sqlmodel import col, select, delete
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from app.common.enviroment import env
@@ -20,21 +20,21 @@ AsyncSessionLocal = async_sessionmaker(
 )
 
 init_users = [
-    {
-        "id": UUID("00000000-0000-4000-0000-000000000000"),
-        "nickname": "admin",
-        "role": Role.ADMIN,
-    },
-    {
-        "id": UUID("00000000-0000-4000-0000-000000000001"),
-        "nickname": "first_customer",
-        "role": Role.CUSTOMER,
-    },
-    {
-        "id": UUID("00000000-0000-4000-0000-000000000002"),
-        "nickname": "second_customer",
-        "role": Role.CUSTOMER,
-    },
+    Account(
+        id=UUID("00000000-0000-4000-0000-000000000000"),
+        nickname="admin",
+        role=Role.ADMIN,
+    ),
+    Account(
+        id=UUID("00000000-0000-4000-0000-000000000001"),
+        nickname="first_customer",
+        role=Role.CUSTOMER,
+    ),
+    Account(
+        id=UUID("00000000-0000-4000-0000-000000000002"),
+        nickname="second_customer",
+        role=Role.CUSTOMER,
+    ),
 ]
 
 
@@ -44,15 +44,14 @@ def anyio_backend():
 
 
 async def init_db(session: AsyncSession) -> None:
-    stmt = select(Account.id).where(Account.id.in_([user["id"] for user in init_users]))
+    stmt = select(Account.id).where(
+        col(Account.id).in_([user.id for user in init_users])
+    )
     existing_user_ids = (await session.exec(stmt)).all()
 
     for user in init_users:
-        if user["id"] not in existing_user_ids:
-            account = Account(
-                id=user["id"], nickname=user["nickname"], role=user["role"]
-            )
-            session.add(account)
+        if user.id not in existing_user_ids:
+            session.add(user)
     await session.commit()
 
 
@@ -79,8 +78,8 @@ async def client() -> AsyncGenerator[AsyncClient, None]:
 
 
 class AccountToken:
-    def __init__(self, id: UUID, nickname: str, token: dict[str, str]):
-        self.id: UUID = id
+    def __init__(self, id_: UUID, nickname: str, token: dict[str, str]):
+        self.id: UUID = id_
         self.nickname: str = nickname
         self.token: dict[str, str] = token
 
@@ -116,9 +115,9 @@ async def tokens(client: AsyncClient, db: AsyncSession) -> Tokens:
     return Tokens(
         *[
             AccountToken(
-                user["id"],
-                user["nickname"],
-                await token_headers(client, str(user["id"])),
+                user.id,
+                user.nickname,
+                await token_headers(client, str(user.id)),
             )
             for user in init_users
         ]

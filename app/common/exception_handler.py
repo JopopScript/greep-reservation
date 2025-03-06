@@ -29,7 +29,7 @@ def error_content(e: CustomException) -> dict:
 def exception_handle(app: FastAPI):
     @app.exception_handler(AuthenticateException)
     async def authenticate_exception_handle(
-            request: Request, exception: AuthenticateException
+        _: Request, exception: AuthenticateException
     ):
         return JSONResponse(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -38,7 +38,7 @@ def exception_handle(app: FastAPI):
 
     @app.exception_handler(AuthorizationException)
     async def authorization_exception_handle(
-            request: Request, exception: AuthorizationException
+        _: Request, exception: AuthorizationException
     ):
         return JSONResponse(
             status_code=status.HTTP_403_FORBIDDEN,
@@ -46,16 +46,14 @@ def exception_handle(app: FastAPI):
         )
 
     @app.exception_handler(BusinessException)
-    async def business_exception_handle(request: Request, exception: BusinessException):
+    async def business_exception_handle(_: Request, exception: BusinessException):
         return JSONResponse(
             status_code=status.HTTP_400_BAD_REQUEST,
             content=error_content(exception),
         )
 
     @app.exception_handler(NoResourceException)
-    async def no_resource_exception_handle(
-            request: Request, exception: NoResourceException
-    ):
+    async def no_resource_exception_handle(_: Request, exception: NoResourceException):
         return JSONResponse(
             status_code=status.HTTP_404_NOT_FOUND,
             content=error_content(exception),
@@ -63,7 +61,7 @@ def exception_handle(app: FastAPI):
 
     @app.exception_handler(InternalServerException)
     async def internal_server_exception_handle(
-            request: Request, exception: InternalServerException
+        _: Request, exception: InternalServerException
     ):
         return JSONResponse(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -71,14 +69,14 @@ def exception_handle(app: FastAPI):
         )
 
     @app.exception_handler(CustomException)
-    async def custom_exception_handle(request: Request, exception: CustomException):
+    async def custom_exception_handle(_: Request, exception: CustomException):
         return JSONResponse(
             status_code=status.HTTP_400_BAD_REQUEST,
             content=error_content(exception),
         )
 
     @app.exception_handler(Exception)
-    async def unexpected_exception_handle(request: Request, exception: Exception):
+    async def unexpected_exception_handle(_: Request, exception: Exception):
         return JSONResponse(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             content=DEFAULT_ERROR_RESPONSE_CONTENTS,
