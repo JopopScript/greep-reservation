@@ -13,7 +13,7 @@ venv/
 .mypy_cache/
 
 # Enviroment
-# *.env
+*.env
 
 # Cache
 .pytest_cache/
