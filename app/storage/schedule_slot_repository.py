@@ -27,7 +27,9 @@ class ScheduleSlotRepository:
         await self.sess.flush()
         return slot
 
-    async def find_schedules_by_range_with_lock(self, time_range: TimeRange) -> list[ScheduleSlot]:
+    async def find_schedules_by_range_with_lock(
+        self, time_range: TimeRange
+    ) -> list[ScheduleSlot]:
         await self.__missing_create_slot(time_range.start_at(), time_range.end_at())
         query = (
             select(ScheduleSlot)
@@ -35,7 +37,7 @@ class ScheduleSlotRepository:
                 and_(
                     ScheduleSlot.slot_start_time >= time_range.start_at(),
                     ScheduleSlot.slot_start_time <= time_range.end_at(),
-                    )
+                )
             )
             .order_by(ScheduleSlot.slot_start_time)
             .with_for_update()
@@ -55,7 +57,7 @@ class ScheduleSlotRepository:
                 and_(
                     ScheduleSlot.slot_start_time >= time_range.start_at(),
                     ScheduleSlot.slot_start_time <= time_range.end_at(),
-                    )
+                )
             )
             .order_by((ScheduleSlot.max_applicants - ScheduleSlot.confirmed_applicants))
             .limit(1)

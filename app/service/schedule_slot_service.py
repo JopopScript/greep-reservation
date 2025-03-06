@@ -42,24 +42,30 @@ class ScheduleSlotService:
             await self.repository.add_applicants(time_range, -applicants)
 
     async def validate_applicants_limit(
-            self, time_range: TimeRange, applicants: int
+        self, time_range: TimeRange, applicants: int
     ) -> None:
-        remain_applicants: int = await self.repository.min_applicants_in_range(time_range)
+        remain_applicants: int = await self.repository.min_applicants_in_range(
+            time_range
+        )
         if remain_applicants < applicants:
             raise BusinessException(
                 "Applicants must be less than or equal to the limit. "
                 + f"limit({remain_applicants}) < applicants({applicants}). range({time_range})",
                 ErrorCode.INVALID_ARGUMENT,
-                )
+            )
 
     async def __validate_applicants_limit_with_lock(
-            self, time_range: TimeRange, applicants: int
+        self, time_range: TimeRange, applicants: int
     ) -> None:
-        slots: list[ScheduleSlot] = await self.repository.find_schedules_by_range_with_lock(time_range)
-        remain_applicants: int = min(slots, key=lambda slot: slot.remain_applicants()) if slots else 50000
+        slots: list[ScheduleSlot] = (
+            await self.repository.find_schedules_by_range_with_lock(time_range)
+        )
+        remain_applicants: int = (
+            min(slots, key=lambda slot: slot.remain_applicants()) if slots else 50000
+        )
         if remain_applicants < applicants:
             raise BusinessException(
                 "Applicants must be less than or equal to the limit. "
                 + f"limit({remain_applicants}) < applicants({applicants}). range({time_range})",
                 ErrorCode.INVALID_ARGUMENT,
-                )
+            )
