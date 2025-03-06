@@ -33,6 +33,8 @@
 로컬 파이썬 환경과 기존에 존재하는 postgresql을 사용한 구동하는 방법과 docker-compose를 사용한 구동하는 방법이 있습니다.
 
 ### 로컬에서 직접 구동
+- postgresql에 테이블 생성이 필요함
+  - `app/script/init.sql`에 있는 DDL을 먼저 적용할 필요가 있음
 ```bash
 # 3.12.9 버전에서 구동 추천
 python --version
